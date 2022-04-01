@@ -828,23 +828,30 @@ install_discord() {
 
 install_whatsapp_for_linux() {
     header "Install whatsapp-for-linux"
-    press_any_key_to_continue
-    while true; do
-        red_text "Command 'whatsapp-for-linux' not found."
-        read -p "Do you want to install it? (y/N)" yn
-        case $yn in
-        [Yy]*)
-            break
-            ;;
-        [Nn]* | '')
-            menu_whiptail
-            ;;
-        *) echo "Please answer yes or no." ;;
-        esac
-    done
 
-    launching_command "cd /tmp"
-    cd /tmp
+    if hash whatsapp-for-linux 2>/dev/null; then
+        green_text "whatsapp-for-linux is already installed"
+        press_any_key_to_continue
+        menu_whiptail
+    else
+        press_any_key_to_continue
+        while true; do
+            red_text "Command 'whatsapp-for-linux' not found."
+            read -p "Do you want to install it? (y/N)" yn
+            case $yn in
+            [Yy]*)
+                break
+                ;;
+            [Nn]* | '')
+                menu_whiptail
+                ;;
+            *) echo "Please answer yes or no." ;;
+            esac
+        done
+    fi
+
+    launching_command "cd ~"
+    cd ~
     launching_command "git clone https://github.com/eneshecan/whatsapp-for-linux.git"
     git clone https://github.com/eneshecan/whatsapp-for-linux.git
     launching_command "cd whatsapp-for-linux.git"
@@ -852,12 +859,14 @@ install_whatsapp_for_linux() {
     launching_command "sudo $package_manager install cmake libayatana-appindicator3-dev libgtkmm-3.0-dev libwebkit2gtk-4.0-dev"
     sudo $package_manager install cmake libayatana-appindicator3-dev libgtkmm-3.0-dev libwebkit2gtk-4.0-dev
     launching_command "dpkg-buildpackage -uc -us -ui"
-    dpkg-buildpackage -uc -us -ui
+    sudo dpkg-buildpackage -uc -us -ui
     launching_command "cd ~"
     cd ~
     red_text "if 'dpkg-buildpackage -uc -us -ui' fail your need launch it manualy in the folder"
-    red_text "cd /tmp/whatsapp-for-linux"
+    red_text "cd $HOME/whatsapp-for-linux"
     red_text "dpkg-buildpackage -uc -us -ui"
+    red_text "cd $HOMME"
+    red_text "sudo $package_manager install whatsapp-for-linux_[Version_Number]_amd64.deb"
 
     footer "WHATSSAPP-FOR-LINUX INSTALLATION END"
 
@@ -926,7 +935,7 @@ install_gnome_shell_extension_installer() {
         done
     fi
 
-    launching_command "wget -O gnome-shell-extension-installer $(https://github.com/brunelli/gnome-shell-extension-installer/raw/master/gnome-shell-extension-installer)"
+    launching_command "wget -O gnome-shell-extension-installer 'https://github.com/brunelli/gnome-shell-extension-installer/raw/master/gnome-shell-extension-installer'"
     wget -O gnome-shell-extension-installer "https://github.com/brunelli/gnome-shell-extension-installer/raw/master/gnome-shell-extension-installer"
     launching_command "chmod +x gnome-shell-extension-installer"
     chmod +x gnome-shell-extension-installer
@@ -934,6 +943,44 @@ install_gnome_shell_extension_installer() {
     sudo mv gnome-shell-extension-installer /usr/bin/
 
     footer "GNOME SHELL EXTENSION INSTALLER INSTALLATION END"
+
+    press_any_key_to_continue
+}
+
+install_skype() {
+    header "Install Skype"
+    press_any_key_to_continue
+
+    if hash skypeforlinux 2>/dev/null; then
+        green_text "Skype is already installed"
+        press_any_key_to_continue
+        menu_whiptail
+    else
+        while true; do
+            red_text "Command 'skypeforlinux' not found."
+            read -p "Do you want to install it? (y/N)" yn
+            case $yn in
+            [Yy]*)
+                break
+                ;;
+            [Nn]* | '')
+                menu_whiptail
+                ;;
+            *) echo "Please answer yes or no." ;;
+            esac
+        done
+    fi
+
+    launching_command "cd /tmp"
+    cd /tmp
+    launching_command "wget -O https://go.skype.com/skypeforlinux-64.deb"
+    wget -O https://go.skype.com/skypeforlinux-64.deb
+    launching_command "sudo $package_manager install skypeforlinux-64.deb"
+    sudo $package_manager install skypeforlinux-64.deb
+    launching_command "cd ~"
+    cd ~
+
+    footer "SKYPE INSTALLATION END"
 
     press_any_key_to_continue
 }
@@ -973,27 +1020,51 @@ install_gnome_extension() {
         GEXTENSION=$(whiptail --title "By LinkPhoenix" --checklist \
             "Choose gnome extension(s) you want to install" $(($LINES - 10)) $(($COLUMNS - 50)) $(($LINES - 20)) \
             "120" "System-monitor : Display system information in GNOME Shell status bar, such as memory, CPU, disk and battery usages, network rates…" OFF \
-            "941" "Show IP : Show IP addresses (private or public) in gnome-shell bar" OFF \
-            "3737" "Hue Lights : This extension controls Philips Hue compatible lights using Philips Hue Bridge on your local network, it also allows controlling Philips Hue Sync Box." OFF 3>&2 2>&1 1>&3)
+            "3994" "All IP Addresses : Show IP addresses for LAN, WAN IPv6 and VPN in the GNOME panel. Click on the address to cycle trough different interfaces." OFF \
+            "3737" "Hue Lights : This extension controls Philips Hue compatible lights using Philips Hue Bridge on your local network, it also allows controlling Philips Hue Sync Box." OFF \
+            "2983" "IP Finder : Displays useful information about your public IP Address" OFF \
+            "4506" "Simple System Monitor : Show current CPU usage, memory usage and net speed on panel.
+For best experience, please use monospaced font." OFF \
+            "4919" "Weather : Animation Weather. " OFF 3>&2 2>&1 1>&3)
 
     else
         GEXTENSION=$(whiptail --title "By LinkPhoenix" --checklist --menu "By LinkPhoenix" \
             "Choose gnome extension(s) you want to install" 25 78 16 \
             "120" "System-monitor : Display system information in GNOME Shell status bar, such as memory, CPU, disk and battery usages, network rates…" OFF \
-            "941" "Show IP : Show IP addresses (private or public) in gnome-shell bar" OFF \
-            "3737" "Hue Lights : This extension controls Philips Hue compatible lights using Philips Hue Bridge on your local network, it also allows controlling Philips Hue Sync Box." OFF 3>&2 2>&1 1>&3)
+            "3994" "All IP Addresses : Show IP addresses for LAN, WAN IPv6 and VPN in the GNOME panel. Click on the address to cycle trough different interfaces." OFF \
+            "3737" "Hue Lights : This extension controls Philips Hue compatible lights using Philips Hue Bridge on your local network, it also allows controlling Philips Hue Sync Box." OFF \
+            "2983" "IP Finder : Displays useful information about your public IP Address" OFF \
+            "4506" "Simple System Monitor : Show current CPU usage, memory usage and net speed on panel.
+For best experience, please use monospaced font." OFF \
+            "4919" "Weather : Animation Weather. " OFF 3>&2 2>&1 1>&3)
     fi
 
-    for element in ${GEXTENSION[@]}; do
-        element="${element:1:-1}"
-        launching_command "gnome-shell-extension-installer $element"
-        gnome-shell-extension-installer $element
+    while true; do
+        read -p "Do you want I try enable extensions? (y/N)" yn
+        case $yn in
+        [Yy]*)
+            gnome-extensions enable system-monitor@paradoxxx.zero.gmail.com
+            gnome-extensions enable gnome-extension-all-ip-addresses@havekes.eu
+            gnome-extensions enable hue-lights@chlumskyvaclav.gmail.com
+            gnome-extensions enable IP-Finder@linxgem33.com
+            gnome-extensions enable weather@eexpss.gmail.com
+            gnome-extensions enable ssm-gnome@lgiki.net
+            red_text "You need restart Gnome Shell"
+            red_text "Press Alt+F2, r, Enter to restart GNOME Shell. Your extensions should appear at the top bar in a second."
+            footer "GNOME EXTENSION INSTALLER INSTALLATION END"
+
+            press_any_key_to_continue
+            ;;
+        [Nn]* | '')
+            menu_whiptail
+            ;;
+        *) echo "Please answer yes or no." ;;
+        esac
     done
 
     footer "GNOME EXTENSION INSTALLER INSTALLATION END"
 
     press_any_key_to_continue
-
 }
 
 menu_whiptail() {
@@ -1022,7 +1093,8 @@ menu_whiptail() {
                 "18)" "Install Alfa's Driver" \
                 "19)" "Install Brave Browser" \
                 "20)" "Install Gnome Shell Extension" \
-                "21)" "Install Gnome Extension" 3>&2 2>&1 1>&3)
+                "21)" "Install Gnome Extension" \
+                "22)" "Install Skype" 3>&2 2>&1 1>&3)
         else
             CHOICE=$(whiptail --title "Installfest - The Hacking Project" --menu "By LinkPhoenix" --nocancel --notags --clear 25 78 16 \
                 "1)" "Exit" \
@@ -1045,7 +1117,8 @@ menu_whiptail() {
                 "18)" "Install Alfa's Driver" \
                 "19)" "Install Brave Browser" \
                 "20)" "Install Gnome Shell Extension" \
-                "21)" "Install Gnome Extension" 3>&2 2>&1 1>&3)
+                "21)" "Install Gnome Extension" \
+                "22)" "Install Skype" 3>&2 2>&1 1>&3)
         fi
         case $CHOICE in
         "1)") end_of_script ;;
@@ -1069,6 +1142,7 @@ menu_whiptail() {
         "19)") install_brave_browser ;;
         "20)") install_gnome_shell_extension_installer ;;
         "21)") install_gnome_extension ;;
+        "22)") install_skype ;;
         esac
     done
     exit
