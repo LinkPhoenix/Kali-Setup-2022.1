@@ -138,7 +138,8 @@ message_exit() {
     echo "${YELLOW}#######################################################${RESET}"
     echo ""
     echo "${RED}${BOLD}Thank you for using this script ${RESET}"
-    echo "${YELLOW}${BOLD}https://www.buymeacoffee.com/LinkPhoenix${RESET}"
+    echo "${YELLOW}${BOLD}you can send me one including BTC to this address : ${RESET}"
+    echo "${YELLOW}${BOLD}NOT YET${RESET}"
     echo ""
     echo "${YELLOW}#######################################################${RESET}"
 }
@@ -1129,7 +1130,7 @@ Script information
 
 Author              LinkPhoenix
 Github              https://github.com/LinkPhoenix
-URL Repository      https://github.com/LinkPhoenix/THP_Installfest
+URL Repository      https://github.com/LinkPhoenix/AlienWareM15R6-Kali-Linux-initial-setup
 
 "
 
